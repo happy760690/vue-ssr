@@ -1,5 +1,6 @@
 <template>
-  <div>Bar</div>
+  <div>Bar
+  </div>
 </template>
 <style scoped>
 div{

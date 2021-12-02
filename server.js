@@ -30,4 +30,20 @@ router.get('/', async ctx => {
 
 app.use(router.routes());
 app.use(static(path.resolve(__dirname, 'dist')));
+// If the server does not have this path, the current home page will be rendered
+app.use(async ctx => { // This logic is executed if no match is found
+    try{
+        ctx.body = await new Promise((resolve, reject) => { // Must be written as a callback function
+            render.renderToString({url: ctx.url},(err, data) => {
+                // console.log(err, 'cuocuocuccucucucuu')
+                if(err) reject(err)
+                resolve(data)
+            })
+        })
+    }catch(e){
+        console.log(e)
+        ctx.body = '404'
+    }
+    
+})
 app.listen(3000) 
