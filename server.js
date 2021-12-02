@@ -10,10 +10,12 @@ const VueServerRender = require('vue-server-renderer')
 const app = new Koa({})
 const router = new Router()
 
-let ServerBundle = fs.readFileSync(path.join(__dirname, './dist/server.bundle.js'),'utf8')
-let template = fs.readFileSync(path.join(__dirname, './dist/index.ssr.html'), 'utf8')
+const template = fs.readFileSync(path.join(__dirname, './dist/index.ssr.html'), 'utf8')
+const ServerBundle = require('./dist/vue-ssr-server-bundle.json')
+const clientManifest = require('./dist/vue-ssr-client-manifest.json')
 const render = VueServerRender.createBundleRenderer(ServerBundle, { 
-    template
+    template,
+    clientManifest
 }) // Render packaged results
 
 router.get('/', async ctx => {
