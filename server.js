@@ -21,7 +21,7 @@ const render = VueServerRender.createBundleRenderer(ServerBundle, {
 router.get('/', async ctx => {
     // ctx.body = await render.renderToString() // css doesn't work
     ctx.body = await new Promise((resolve, reject) => { // Must be written as a callback function
-        render.renderToString((err, data) => {
+        render.renderToString({url: '/'},(err, data) => {
             if(err) reject(err)
             resolve(data)
         })
