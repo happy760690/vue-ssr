@@ -3,32 +3,29 @@ const Router = require('koa-router')
 const Static = require('koa-static')
 const Vue = require('vue')
 const fs = require('fs')
+const static = require('koa-static')
 const path = require('path')
 const VueServerRender = require('vue-server-renderer')
 
 const app = new Koa({})
 const router = new Router()
 
-// Create a renderer
-const template = fs.readFileSync(path.join(__dirname, './template.html'), 'utf8')
-const render = VueServerRender.createRenderer({
-    template: template,
-})
-
-const vm = new Vue({
-    data(){
-        return {msg: 'hello mingjuan'}
-    },
-    template:'<div>{{msg}}</div>'
-})
-
+let ServerBundle = fs.readFileSync(path.join(__dirname, './dist/server.bundle.js'),'utf8')
+let template = fs.readFileSync(path.join(__dirname, './dist/index.ssr.html'), 'utf8')
+const render = VueServerRender.createBundleRenderer(ServerBundle, { 
+    template
+}) // Render packaged results
 
 router.get('/', async ctx => {
-    ctx.body = await render.renderToString(vm)
+    // ctx.body = await render.renderToString() // css doesn't work
+    ctx.body = await new Promise((resolve, reject) => { // Must be written as a callback function
+        render.renderToString((err, data) => {
+            if(err) reject(err)
+            resolve(data)
+        })
+    })
 })
 
-
-
 app.use(router.routes());
-
-app.listen(3000)
+app.use(static(path.resolve(__dirname, 'dist')));
+app.listen(3000) 

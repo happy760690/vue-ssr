@@ -16,6 +16,9 @@ module.exports = merge(base, {
     new HtmlWebpackPlugin({
       filename: 'index.ssr.html',
       template: resolve('../public/index.ssr.html'),
+      minify: {
+        removeComments: false,
+      },
       excludeChunks: ['server'] // Exclusion module
     })
   ],
